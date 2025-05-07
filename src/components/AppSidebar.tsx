@@ -1,5 +1,5 @@
 
-import { Home, Users, Phone, FolderKanban, ClipboardList, UserHardHat, BarChart3, BookOpen } from "lucide-react";
+import { Home, Users, Phone, FolderKanban, ClipboardList, HardHat, BarChart3, BookOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -41,7 +41,7 @@ const menuItems = [
   },
   {
     title: "Workers",
-    icon: UserHardHat,
+    icon: HardHat,
     to: "/workers",
   },
   {
