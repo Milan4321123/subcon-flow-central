@@ -20,6 +20,7 @@ import WorkerDashboardPage from "./pages/WorkerDashboardPage";
 import WorkerTasksPage from "./pages/WorkerTasksPage";
 import WorkerTaskDetailPage from "./pages/WorkerTaskDetailPage";
 import WorkerLogUploadPage from "./pages/WorkerLogUploadPage";
+import WorkerLogEditPage from "./pages/WorkerLogEditPage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="tasks" element={<WorkerTasksPage />} />
                 <Route path="tasks/:id" element={<WorkerTaskDetailPage />} />
                 <Route path="tasks/:id/logs" element={<WorkerLogUploadPage />} />
+                <Route path="tasks/:id/logs/:logId/edit" element={<WorkerLogEditPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Route>

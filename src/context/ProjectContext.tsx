@@ -31,6 +31,7 @@ export type Project = {
 export type WorkLog = {
   id: string;
   taskId: string;
+  workerId: string;   // which worker created the log
   photoUrl: string;
   statusTextOriginal: string;
   statusTextTranslated: string;
