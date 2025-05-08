@@ -47,6 +47,7 @@ interface ProjectContextType {
   setLogs: React.Dispatch<React.SetStateAction<WorkLog[]>>;
   currentWorkerId: string;
   setCurrentWorkerId: React.Dispatch<React.SetStateAction<string>>;
+  updateTask: (taskId: string, changes: Partial<Task>) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -109,6 +110,16 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const [logs, setLogs] = useState<WorkLog[]>([]);
   // ↑ end seed data
 
+  // Update a task by ID with given changes
+  const updateTask = (taskId: string, changes: Partial<Task>) => {
+    setProjects((prev) =>
+      prev.map((proj) => ({
+        ...proj,
+        tasks: proj.tasks.map((t) => (t.id === taskId ? { ...t, ...changes } : t)),
+      }))
+    );
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -116,6 +127,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         workers, setWorkers,
         logs, setLogs,
         currentWorkerId, setCurrentWorkerId,
+        updateTask,
       }}
     >
       {children}
