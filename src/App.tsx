@@ -16,6 +16,10 @@ import WorkersPage from "./pages/WorkersPage";
 import ReportsPage from "./pages/ReportsPage";
 import KnowledgeBasePage from "./pages/KnowledgeBasePage";
 import NotFound from "./pages/NotFound";
+import WorkerDashboardPage from "./pages/WorkerDashboardPage";
+import WorkerTasksPage from "./pages/WorkerTasksPage";
+import WorkerTaskDetailPage from "./pages/WorkerTaskDetailPage";
+import WorkerLogUploadPage from "./pages/WorkerLogUploadPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,13 @@ const App = () => (
               <Route path="workers" element={<WorkersPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="knowledge" element={<KnowledgeBasePage />} />
+              {/* worker-facing portal routes */}
+              <Route path="worker">
+                <Route path="dashboard" element={<WorkerDashboardPage />} />
+                <Route path="tasks" element={<WorkerTasksPage />} />
+                <Route path="tasks/:id" element={<WorkerTaskDetailPage />} />
+                <Route path="tasks/:id/logs" element={<WorkerLogUploadPage />} />
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
