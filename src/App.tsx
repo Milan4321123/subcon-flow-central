@@ -1,4 +1,4 @@
-
+import { ProjectProvider } from "./context/ProjectContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,28 +19,30 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="leads" element={<LeadsPage />} />
-            <Route path="leads/:id" element={<LeadDetailsPage />} />
-            <Route path="activities" element={<ActivitiesPage />} />
-            <Route path="projects" element={<ProjectsPage />} />
-            <Route path="tasks" element={<TasksPage />} />
-            <Route path="workers" element={<WorkersPage />} />
-            <Route path="reports" element={<ReportsPage />} />
-            <Route path="knowledge" element={<KnowledgeBasePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ProjectProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="leads" element={<LeadsPage />} />
+              <Route path="leads/:id" element={<LeadDetailsPage />} />
+              <Route path="activities" element={<ActivitiesPage />} />
+              <Route path="projects" element={<ProjectsPage />} />
+              <Route path="tasks" element={<TasksPage />} />
+              <Route path="workers" element={<WorkersPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="knowledge" element={<KnowledgeBasePage />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ProjectProvider>
 );
 
 export default App;
