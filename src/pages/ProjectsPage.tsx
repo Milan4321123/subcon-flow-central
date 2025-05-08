@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { v4 as uuidv4 } from "uuid";
+import { useProjectContext } from "../context/ProjectContext";
+import { Link } from "react-router-dom";
 
 // Data types
 interface Project {
@@ -13,7 +15,7 @@ interface Project {
 }
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { projects, setProjects } = useProjectContext();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", startDate: "" });
 
@@ -26,7 +28,7 @@ const ProjectsPage = () => {
     if (!form.name || !form.startDate) return;
     setProjects([
       ...projects,
-      { id: uuidv4(), name: form.name, description: form.description, startDate: form.startDate },
+      { id: uuidv4(), name: form.name, description: form.description, startDate: form.startDate, tasks: [] },
     ]);
     setForm({ name: "", description: "", startDate: "" });
     setShowForm(false);
@@ -85,15 +87,17 @@ const ProjectsPage = () => {
           </Card>
         ) : (
           projects.map((project) => (
-            <Card key={project.id}>
-              <CardHeader>
-                <CardTitle>{project.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-2">Start: {project.startDate}</p>
-                <p>{project.description}</p>
-              </CardContent>
-            </Card>
+            <Link to={`/projects/${project.id}`} key={project.id} className="block">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{project.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-2">Start: {project.startDate}</p>
+                  <p>{project.description}</p>
+                </CardContent>
+              </Card>
+            </Link>
           ))
         )}
       </div>
@@ -101,4 +105,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage; 
+export default ProjectsPage;
