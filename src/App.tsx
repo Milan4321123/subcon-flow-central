@@ -21,6 +21,7 @@ import WorkerTasksPage from "./pages/WorkerTasksPage";
 import WorkerTaskDetailPage from "./pages/WorkerTaskDetailPage";
 import WorkerLogUploadPage from "./pages/WorkerLogUploadPage";
 import WorkerLogEditPage from "./pages/WorkerLogEditPage";
+import TaskLogsPage from "./pages/TaskLogsPage";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,8 @@ const App = () => (
               <Route path="projects" element={<ProjectsPage />} />
               <Route path="projects/:id" element={<ProjectDetailsPage />} />
               <Route path="tasks" element={<TasksPage />} />
+              {/* admin log viewer */}
+              <Route path="tasks/:id/logs" element={<TaskLogsPage />} />
               <Route path="workers" element={<WorkersPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="knowledge" element={<KnowledgeBasePage />} />

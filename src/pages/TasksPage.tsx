@@ -9,6 +9,7 @@ import {
   TableHead,
   TableCell,
 } from "../components/ui/table";
+import { Link } from "react-router-dom";
 
 const TasksPage = () => {
   const { projects, workers } = useProjectContext();
@@ -16,6 +17,9 @@ const TasksPage = () => {
   const tasksWithProject = projects.flatMap((project) =>
     project.tasks.map((task) => ({ ...task, projectName: project.name }))
   );
+
+  // Compute log counts per task
+  const { logs } = useProjectContext();
 
   return (
     <div className="space-y-6">
@@ -42,6 +46,7 @@ const TasksPage = () => {
               <TableHead>Due Date</TableHead>
               <TableHead>Assigned To</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Logs</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -55,6 +60,7 @@ const TasksPage = () => {
                 : task.subtasks.length > 0
                 ? "In Progress"
                 : "Not Started";
+              const logCount = logs.filter((l) => l.taskId === task.id).length;
               return (
                 <TableRow key={task.id}>
                   <TableCell>{task.title}</TableCell>
@@ -62,6 +68,14 @@ const TasksPage = () => {
                   <TableCell>{task.dueDate}</TableCell>
                   <TableCell>{assignedNames}</TableCell>
                   <TableCell>{status}</TableCell>
+                  <TableCell>
+                    <Link
+                      to={`/tasks/${task.id}/logs`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {logCount} log{logCount !== 1 ? 's' : ''}
+                    </Link>
+                  </TableCell>
                 </TableRow>
               );
             })}
