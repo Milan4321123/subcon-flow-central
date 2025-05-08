@@ -9,6 +9,7 @@ export type Subtask = {
   dueDate: string;
   assignedWorkerIds: string[];
   completed: boolean;
+  hoursWorked: number;
 };
 export type Task = {
   id: string;
@@ -16,6 +17,7 @@ export type Task = {
   dueDate: string;
   assignedWorkerIds: string[];
   completed: boolean;
+  hoursWorked: number;
   subtasks: Subtask[];
 };
 export type Project = {
@@ -55,4 +57,4 @@ export const useProjectContext = () => {
   const context = useContext(ProjectContext);
   if (!context) throw new Error("useProjectContext must be used within a ProjectProvider");
   return context;
-}; 
+};
