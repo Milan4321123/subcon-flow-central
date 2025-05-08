@@ -33,10 +33,16 @@ const WorkerTaskDetailPage = () => {
             <ul className="space-y-4">
               {taskLogs.map((log) => (
                 <li key={log.id} className="border p-2 rounded">
-                  <img src={log.photoUrl} alt="Log evidence" className="max-h-40 mb-2" />
+                  <img src={log.photoUrl} alt="Work evidence" className="max-h-40 mb-2" />
                   <p><strong>Original:</strong> {log.statusTextOriginal}</p>
                   <p><strong>Translated:</strong> {log.statusTextTranslated}</p>
                   <p className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(log.timestamp))} ago</p>
+                  <Link
+                    to={`/worker/tasks/${task.id}/logs/${log.id}/edit`}
+                    className="mt-2 inline-block text-blue-500 hover:underline text-sm"
+                  >
+                    Edit Log
+                  </Link>
                 </li>
               ))}
             </ul>
