@@ -10,12 +10,12 @@ import LeadsPage from "./pages/LeadsPage";
 import LeadDetailsPage from "./pages/LeadDetailsPage";
 import ActivitiesPage from "./pages/ActivitiesPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import TasksPage from "./pages/TasksPage";
 import WorkersPage from "./pages/WorkersPage";
 import ReportsPage from "./pages/ReportsPage";
 import KnowledgeBasePage from "./pages/KnowledgeBasePage";
 import NotFound from "./pages/NotFound";
-import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 
 const queryClient = new QueryClient();
 
