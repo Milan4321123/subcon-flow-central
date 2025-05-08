@@ -3,12 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
+import { useProjectContext } from "../context/ProjectContext";
+import { v4 as uuidv4 } from "uuid";
 
 const WorkerLogUploadPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [photo, setPhoto] = useState<File | null>(null);
   const [statusText, setStatusText] = useState("");
+  const { logs, setLogs, currentWorkerId } = useProjectContext();
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) setPhoto(e.target.files[0]);
@@ -16,8 +19,19 @@ const WorkerLogUploadPage = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // TODO: upload photo and statusText, auto-translate into admin language via API
-    // After success, navigate back to task detail
+    if (!photo || !statusText) return;
+    const photoUrl = URL.createObjectURL(photo);
+    const translated = statusText + " (translated)";
+    const newLog = {
+      id: uuidv4(),
+      taskId: id!,
+      workerId: currentWorkerId,
+      photoUrl: photoUrl,
+      statusTextOriginal: statusText,
+      statusTextTranslated: translated,
+      timestamp: new Date().toISOString()
+    };
+    setLogs([...logs, newLog]);
     navigate(-1);
   };
 
