@@ -1,6 +1,6 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -8,19 +8,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { PlusIcon, MoreHorizontalIcon, FilterIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from "uuid";
 
 interface Lead {
   id: string;
@@ -93,6 +93,16 @@ const mockLeads: Lead[] = [
 const LeadsPage = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState<Omit<Lead, "id" | "created">>({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    status: "new",
+    source: "",
+    nextFollowUp: undefined,
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -103,6 +113,36 @@ const LeadsPage = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleFormChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+  const handleCreateLead = (e: FormEvent) => {
+    e.preventDefault();
+    const newLead: Lead = {
+      id: uuidv4(),
+      ...form,
+      created: new Date().toISOString().split("T")[0],
+    };
+    setLeads([newLead, ...leads]);
+    toast({
+      title: "Lead added",
+      description: `${form.name} has been created`,
+    });
+    setForm({
+      name: "",
+      company: "",
+      email: "",
+      phone: "",
+      status: "new",
+      source: "",
+      nextFollowUp: undefined,
+    });
+    setShowForm(false);
+  };
 
   const filteredLeads = leads.filter(
     (lead) =>
@@ -139,13 +179,101 @@ const LeadsPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Leads</h1>
-          <p className="text-muted-foreground">Manage and track your potential clients.</p>
+          <p className="text-muted-foreground">
+            Manage and track your potential clients.
+          </p>
         </div>
-        <Button className="sm:w-auto w-full">
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Add New Lead
-        </Button>
+        {!showForm && (
+          <Button
+            onClick={() => setShowForm(true)}
+            className="sm:w-auto w-full"
+          >
+            <PlusIcon className="mr-2 h-4 w-4" />
+            Add New Lead
+          </Button>
+        )}
       </div>
+
+      {showForm && (
+        <Card className="max-w-lg mx-auto">
+          <CardHeader>
+            <CardTitle>New Lead</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4" onSubmit={handleCreateLead}>
+              <Input
+                name="name"
+                placeholder="Name"
+                value={form.name}
+                onChange={handleFormChange}
+                required
+              />
+              <Input
+                name="company"
+                placeholder="Company"
+                value={form.company}
+                onChange={handleFormChange}
+                required
+              />
+              <Input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleFormChange}
+                required
+              />
+              <Input
+                name="phone"
+                placeholder="Phone"
+                value={form.phone}
+                onChange={handleFormChange}
+                required
+              />
+              <div className="flex gap-2">
+                <select
+                  name="status"
+                  value={form.status}
+                  onChange={handleFormChange}
+                  className="border rounded p-2"
+                >
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="qualified">Qualified</option>
+                  <option value="lost">Lost</option>
+                </select>
+                <Input
+                  name="source"
+                  placeholder="Source"
+                  value={form.source}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <Input
+                name="nextFollowUp"
+                type="date"
+                placeholder="Next Follow-up"
+                value={form.nextFollowUp || ""}
+                onChange={handleFormChange}
+              />
+              <div className="flex gap-2">
+                <Button type="submit" className="flex-1">
+                  Create Lead
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="relative w-full sm:w-64">
@@ -169,13 +297,13 @@ const LeadsPage = () => {
             <path d="m21 21-4.3-4.3" />
           </svg>
         </div>
-        
+
         <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
           <Button variant="outline" size="sm" className="hidden sm:flex">
             <FilterIcon className="h-4 w-4 mr-2" />
             Filter
           </Button>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -217,20 +345,34 @@ const LeadsPage = () => {
                   filteredLeads.map((lead) => (
                     <TableRow key={lead.id}>
                       <TableCell className="font-medium">
-                        <Link to={`/leads/${lead.id}`} className="hover:underline">
+                        <Link
+                          to={`/leads/${lead.id}`}
+                          className="hover:underline"
+                        >
                           {lead.name}
                         </Link>
                       </TableCell>
                       <TableCell>{lead.company}</TableCell>
-                      <TableCell className="hidden md:table-cell">{lead.email}</TableCell>
-                      <TableCell className="hidden md:table-cell">{lead.phone}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {lead.email}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {lead.phone}
+                      </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusBadgeVariant(lead.status) as any}>
-                          {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                        <Badge
+                          variant={getStatusBadgeVariant(lead.status) as any}
+                        >
+                          {lead.status.charAt(0).toUpperCase() +
+                            lead.status.slice(1)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell">{lead.source}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{lead.created}</TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {lead.source}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {lead.created}
+                      </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -245,8 +387,8 @@ const LeadsPage = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem>Edit Lead</DropdownMenuItem>
                             <DropdownMenuItem>Log Activity</DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="text-destructive" 
+                            <DropdownMenuItem
+                              className="text-destructive"
                               onClick={() => handleDelete(lead.id)}
                             >
                               Delete Lead
@@ -280,7 +422,9 @@ const LeadsPage = () => {
                               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                             </svg>
                           </div>
-                          <p className="text-muted-foreground">Loading leads...</p>
+                          <p className="text-muted-foreground">
+                            Loading leads...
+                          </p>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center p-6">
@@ -302,8 +446,15 @@ const LeadsPage = () => {
                               <line x1="9" y1="14" x2="15" y2="14" />
                             </svg>
                           </div>
-                          <p className="text-muted-foreground">No leads match your search.</p>
-                          <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchTerm("")}>
+                          <p className="text-muted-foreground">
+                            No leads match your search.
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-4"
+                            onClick={() => setSearchTerm("")}
+                          >
                             Clear Search
                           </Button>
                         </div>

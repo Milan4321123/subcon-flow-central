@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -25,12 +24,6 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {!isMobile && (
-          <Button size="sm" className="gap-1">
-            <PlusIcon className="h-4 w-4" />
-            <span>New Lead</span>
-          </Button>
-        )}
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <BellIcon className="h-5 w-5" />
         </Button>
